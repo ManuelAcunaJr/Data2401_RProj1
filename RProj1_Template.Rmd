@@ -2,10 +2,14 @@
 title: "Hello R"
 author: "Manuel Acuna Jr"
 date: "Data 2401"
-output: html_document
+output: 
+  html_document: 
+    fig_width: 5
+    highlight: pygments
+    theme: readable
 ---
 
-MAKE SURE YOU READ AND FOLLOW **ALL** INSTRUCTIONS ON THE INSTRUCTION DOCUMENT. 
+ 
 
 ### Load packages
 
@@ -23,7 +27,7 @@ There are 1846 rows and 3 columns. The variables are "dataset", "x", and "y".
 
 First let's plot the data in the dino dataset:
 
-```{r plot-dino, fig.height=3, fig.width=6}
+```{r plot-dino}
 dino_data <- datasaurus_dozen %>%
   filter(dataset == "dino")
 ggplot(data = dino_data, mapping = aes(x = x, y = y)) +
@@ -79,4 +83,21 @@ The r of dino (-0.06447185) is less negative compared to the r of circle (-0.068
 
 ### Exercise 5
 
-(Add code and narrative as needed. To add R chunks either type out the backticks, curly braces, and the letter `r` or use the Insert chunk button above, with the green +C.)
+Finally let's plot all datasets at once and calculate their summary correlation coefficients. In order to this we will make use of facetting.
+
+```{r plot-all, fig.height=12, fig.width=8}
+ggplot(datasaurus_dozen, aes(x = x, y = y, color = dataset))+
+  geom_point()+
+  facet_wrap(~ dataset, ncol = 3) +
+  theme(legend.position = "none")
+```
+
+And now we can use the group_by function to generate all the summary correlation coefficients.
+
+```{r cor-all}
+datasaurus_dozen %>%
+  group_by(dataset) %>%
+  summarize(r = cor(x, y)) %>%
+  print(13)
+```
+
